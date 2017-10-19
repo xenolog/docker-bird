@@ -1,9 +1,13 @@
-FROM xenolog/u1604
+FROM golang:1.9.1-alpine
 MAINTAINER Sergey Vasilenko <stalk@makeworld.ru>
-RUN gpg --keyserver keyserver.ubuntu.com --recv-keys F9C59A45
-RUN gpg -a --export F9C59A45 | apt-key add -
-RUN LANG=en_US.UTF-8 add-apt-repository -y -u ppa:cz.nic-labs/bird
-RUN apt-get update -y
-RUN echo manual > /etc/init/bird.override
-RUN echo manual > /etc/init/bird6.override
-RUN TERM=screen apt-get install -y bird
+RUN apk update \
+  && apk add bash curl git glide \
+  && go get -u github.com/golang/dep/... \
+  && cd /go/src/github.com/golang/dep \
+  && git checkout $(git tag | tail -n 1) \
+  && go install github.com/golang/dep/... \
+  && mv /go/bin/dep /usr/bin \
+  # Cleanup
+  && cd /go \
+  && rm -rf /go/bin/* /go/src/*
+WORKDIR /go
