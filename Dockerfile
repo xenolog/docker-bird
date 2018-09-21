@@ -18,7 +18,7 @@ RUN go get -u github.com/golang/dep/... \
   # Cleanup go tools
   && cd /go \
   && rm -rf /go/bin/* /go/src/* /go/pkg/*
-#ENV GOPATH /go
+ENV GOPATH=
 WORKDIR /go
 ENTRYPOINT sh
 # should be latest for proper versioning
